@@ -12,4 +12,4 @@ main_arc: main_arc.o scoped_nsobject.o
 main_mrc: main_mrc.o scoped_nsobject.o
 	$(CC) $(LDFLAGS) main_mrc.o scoped_nsobject.o -o main_mrc
 scoped_nsobject.o: scoped_nsobject.mm scoped_nsobject.h
-	$(CC) $(CCFLAGS) -fno-objc-arc main.mm -o scoped_nsobject.o scoped_nsobject.mm 
+	$(CC) $(CCFLAGS) -fno-objc-arc -o scoped_nsobject.o scoped_nsobject.mm 

@@ -53,7 +53,7 @@ class scoped_nsprotocol {
   using Memory = scoped_nsprotocol_memory_management<NST>;
 
  public:
-  explicit scoped_nsprotocol(NST object = Memory::InvalidValue()) : object_(object) {}
+  explicit scoped_nsprotocol(__unsafe_unretained NST object = Memory::InvalidValue()) : object_(object) {}
 
   scoped_nsprotocol(const scoped_nsprotocol<NST>& that) : object_(Memory::Retain(that.object_)) {}
 
@@ -67,7 +67,7 @@ class scoped_nsprotocol {
     return *this;
   }
 
-  void reset(NST object = Memory::InvalidValue()) {
+  void reset(__unsafe_unretained NST object = Memory::InvalidValue()) {
     // We intentionally do not check that object != object_ as the caller must
     // either already have an ownership claim over whatever it passes to this
     // method, or call it with the |RETAIN| policy which will have ensured that
@@ -92,7 +92,7 @@ class scoped_nsprotocol {
   // scoped_nsprotocol<>::release() is like scoped_ptr<>::release.  It is NOT a
   // wrapper for [object_ release].  To force a scoped_nsprotocol<> to call
   // [object_ release], use scoped_nsprotocol<>::reset().
-  [[nodiscard]] NST release() {
+  [[nodiscard]] NST release() __attribute((ns_returns_not_retained)) {
     NST temp = object_;
     object_ = Memory::InvalidValue();
     return temp;
@@ -128,7 +128,7 @@ class scoped_nsobject : public scoped_nsprotocol<NST*> {
   using Memory = scoped_nsprotocol_memory_management<NST*>;
 
  public:
-  explicit scoped_nsobject(NST* object = Memory::InvalidValue())
+  explicit scoped_nsobject(__unsafe_unretained NST* object = Memory::InvalidValue())
       : scoped_nsprotocol<NST*>(object) {}
 
   scoped_nsobject(const scoped_nsobject<NST>& that) : scoped_nsprotocol<NST*>(that) {}
@@ -148,7 +148,7 @@ class scoped_nsobject<id> : public scoped_nsprotocol<id> {
   using Memory = scoped_nsprotocol_memory_management<id>;
 
  public:
-  explicit scoped_nsobject(id object = Memory::InvalidValue()) : scoped_nsprotocol<id>(object) {}
+  explicit scoped_nsobject(__unsafe_unretained id object = Memory::InvalidValue()) : scoped_nsprotocol<id>(object) {}
 
   scoped_nsobject(const scoped_nsobject<id>& that) : scoped_nsprotocol<id>(that) {}
 
